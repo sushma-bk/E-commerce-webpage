@@ -13,19 +13,22 @@ class StripeController extends Controller
 
     public function session(Request $request)
     {
-        \Stripe\Stripe::setApiKey(config('stripe.sk'));
-
+//        \Stripe\Stripe::setApiKey(config('stripe.sk'));
+        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
         $productName = $request->get('productName');
         $productPrice = $request->get('price');
         $totalPrice = str_replace([',', '.'], ['', ''], $productPrice);
-
-        $session = \Stripe\Checkout\Session::create([
+        $productDesc = $request->get('description');
+        $productImage = $request->get('image')
+;        $session = \Stripe\Checkout\Session::create([
             'line_items'  => [
                 [
                     'price_data' => [
                         'currency'     => 'INR',
                         'product_data' => [
-                            "name" => $productName,
+                            'name' => $productName,
+                            'description' => $productDesc,
+                            'images' => [$productImage],
                         ],
                         'unit_amount'  => $totalPrice,
                     ],
